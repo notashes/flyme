@@ -5,7 +5,4 @@ edition = "2024"
 
 [dependencies]
 serde = { workspace = true }
-rustls = { workspace = true }
-log = { workspace = true }
-anyhow = { workspace = true }
 interprocess = { workspace = true }

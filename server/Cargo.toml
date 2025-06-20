@@ -9,10 +9,8 @@ path = "src/main.rs"
 
 [dependencies]
 shared = { path = "../shared" }
-interprocess = { workspace = true }
 rustls = { workspace = true }
 rustls-pemfile = { workspace = true }
-serde = { workspace = true }
 bincode = { workspace = true }
 log = { workspace = true }
 env_logger = { workspace = true }

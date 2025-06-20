@@ -8,7 +8,6 @@ name = "client"
 path = "src/main.rs"
 
 [dependencies]
-shared = { path = "../shared" }
 client-lib = { path = "../client-lib" }
 log = { workspace = true }
 env_logger = { workspace = true }
