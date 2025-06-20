@@ -72,6 +72,7 @@ impl SecureIpcClient {
 
     pub fn connect(&self) -> Result<SecureIpcConnection> {
         let name = shared::get_socket_name().context("Failed to create socket name")?;
+        println!("Here is the socket name: {name:?}");
         let stream =
             LocalSocketStream::connect(name).context("Failed to connect to server IPC socket")?;
         info!("Connected to server via IPC");

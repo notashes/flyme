@@ -28,7 +28,6 @@ pub const SERVER_SOCKET_NAME: &str = "flyme.sock";
 
 /// Returns a platform-agnostic, namespaced socket name.
 /// This uses the abstract namespace on Linux and a file path in /tmp on other Unixes.
-/// On Windows, it uses the named pipe namespace.
 pub fn get_socket_name() -> io::Result<interprocess::local_socket::Name<'static>> {
     SERVER_SOCKET_NAME.to_ns_name::<GenericNamespaced>()
 }
