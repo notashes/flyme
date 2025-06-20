@@ -60,7 +60,7 @@ struct SecureIpcServer {
 /// struct required by the `bind` syscall for abstract sockets.
 fn bind_abstract_socket(name: &str) -> io::Result<UnixListener> {
     // The full path for an abstract socket starts with a null byte.
-    let full_name = format!("\0{}", name);
+    let full_name = format!("\0{name}");
     let name_bytes = full_name.as_bytes();
 
     unsafe {
@@ -169,10 +169,7 @@ impl SecureIpcServer {
             bind_abstract_socket(socket_path).context("Failed to bind abstract Unix socket")?;
 
         // The name shown in logs will have a leading @ on Linux
-        info!(
-            "Server listening for connections on abstract socket: {}...",
-            socket_path
-        );
+        info!("Server listening for connections on abstract socket: {socket_path}...");
 
         for stream in listener.incoming() {
             match stream {
@@ -202,11 +199,11 @@ impl SecureIpcServer {
     /// Get the binary hash of a process given its PID
     fn get_process_binary_hash(pid: u32) -> Result<String> {
         // Read the executable path from /proc/PID/exe
-        let exe_path = format!("/proc/{}/exe", pid);
+        let exe_path = format!("/proc/{pid}/exe");
         let exe_path = fs::read_link(&exe_path)
-            .with_context(|| format!("Failed to read executable path for PID {}", pid))?;
+            .with_context(|| format!("Failed to read executable path for PID {pid}"))?;
 
-        info!("Client binary path: {:?}", exe_path);
+        info!("Client binary path: {exe_path:?}");
 
         // --- HASHING LOGIC CHANGED HERE ---
 
@@ -215,17 +212,17 @@ impl SecureIpcServer {
 
         // 2. Open the binary file for reading.
         let mut file = fs::File::open(&exe_path)
-            .with_context(|| format!("Failed to open binary file for hashing: {:?}", exe_path))?;
+            .with_context(|| format!("Failed to open binary file for hashing: {exe_path:?}"))?;
 
         // 3. Copy the file's contents into the hasher. This is memory-efficient.
         io::copy(&mut file, &mut hasher)
-            .with_context(|| format!("Failed to hash binary file: {:?}", exe_path))?;
+            .with_context(|| format!("Failed to hash binary file: {exe_path:?}"))?;
 
         // 4. Finalize the hash and get the result as a byte array.
         let hash_bytes = hasher.finalize();
 
         // 5. Format the byte array as a lowercase hexadecimal string.
-        let hash_string = format!("{:x}", hash_bytes);
+        let hash_string = format!("{hash_bytes:x}");
 
         Ok(hash_string)
     }
@@ -235,15 +232,15 @@ impl SecureIpcServer {
         let client_pid = peer_creds::get_peer_pid_from_unix_stream(&unix_stream)
             .context("Failed to get client PID")?;
 
-        info!("New client connected with PID: {}", client_pid);
+        info!("New client connected with PID: {client_pid}");
 
         // Compute client binary hash
         match Self::get_process_binary_hash(client_pid) {
             Ok(hash) => {
-                info!("Client binary hash: {}", hash);
+                info!("Client binary hash: {hash}");
             }
             Err(e) => {
-                warn!("Failed to compute client binary hash: {}", e);
+                warn!("Failed to compute client binary hash: {e}");
             }
         }
 
@@ -286,8 +283,8 @@ impl SecureIpcServer {
     fn process_message(msg: IpcMessage, client_pid: u32) -> IpcMessage {
         match msg {
             IpcMessage::Ping(data) => {
-                info!("Processing ping from PID {}: {}", client_pid, data);
-                IpcMessage::Pong(format!("Echo from PID {}: {}", client_pid, data))
+                info!("Processing ping from PID {client_pid}: {data}");
+                IpcMessage::Pong(format!("Echo from PID {client_pid}: {data}"))
             }
             IpcMessage::Request { id, command, args } => {
                 info!(
@@ -298,30 +295,29 @@ impl SecureIpcServer {
                         id,
                         success: true,
                         data: format!(
-                            "Server is running with root privileges. Client PID: {}",
-                            client_pid
+                            "Server is running with root privileges. Client PID: {client_pid}"
                         ),
                     },
                     "list" => IpcMessage::Response {
                         id,
                         success: true,
-                        data: format!("Files: {args:?} (requested by PID {})", client_pid),
+                        data: format!("Files: {args:?} (requested by PID {client_pid})"),
                     },
                     "privileged_op" => {
                         // You can add client binary verification here
                         match Self::get_process_binary_hash(client_pid) {
                             Ok(hash) => {
-                                info!("Verifying client binary hash: {}", hash);
+                                info!("Verifying client binary hash: {hash}");
                                 // Add your hash verification logic here
                                 // For now, just proceed with the operation
                                 IpcMessage::Response {
                                     id,
                                     success: true,
-                                    data: format!("Privileged operation completed successfully for verified client (PID: {}, Hash: {})", client_pid, hash),
+                                    data: format!("Privileged operation completed successfully for verified client (PID: {client_pid}, Hash: {hash})"),
                                 }
                             }
                             Err(e) => {
-                                warn!("Failed to verify client binary: {}", e);
+                                warn!("Failed to verify client binary: {e}");
                                 IpcMessage::Error {
                                     id,
                                     message: "Failed to verify client binary".to_string(),
