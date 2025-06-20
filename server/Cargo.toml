@@ -18,6 +18,7 @@ log = { workspace = true }
 env_logger = { workspace = true }
 anyhow = { workspace = true }
 clap = { workspace = true }
+sha2 = "0.10.9"
 
 [target.'cfg(unix)'.dependencies]
 libc = "0.2"
