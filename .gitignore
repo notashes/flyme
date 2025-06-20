@@ -1,0 +1,38 @@
+# --- Rust / Cargo ---
+# Compiled artifacts
+/target/
+# Cargo's lock file ensures reproducible builds for applications and workspaces.
+# DO NOT ignore Cargo.lock in this project.
+# Cargo.lock
+
+# --- Secrets ---
+# All private keys and certificates. They should be generated on the target
+# system, not stored in version control.
+certs/*.key
+certs/*.key.pem
+certs/*.pem
+# It's better to ignore the whole directory and provide a script
+# to generate the certs instead.
+# /certs/
+
+# --- Environment Configuration ---
+# Local environment variables
+.env
+.env.*
+!.env.example
+
+# --- IDE / Editor ---
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# --- Operating System ---
+# macOS
+.DS_Store
+# Windows
+Thumbs.db
+
+# --- Logs & Data ---
+*.log
+flyme.sock
