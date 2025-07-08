@@ -1,0 +1,39 @@
+[package]
+name = "flyme-common"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Shared protocols and utilities for Flyme IPC library"
+keywords = ["ipc", "protocol", "shared", "tls", "security"]
+categories = ["network-programming", "data-structures"]
+
+[lib]
+name = "flyme_common"
+path = "src/lib.rs"
+
+[dependencies]
+# Workspace dependencies
+anyhow.workspace = true
+rustls.workspace = true
+rustls-pemfile.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+uuid.workspace = true
+futures-util.workspace = true
+bincode.workspace = true
+crossbeam-channel.workspace = true
+
+# Platform-specific dependencies
+[target.'cfg(unix)'.dependencies]
+libc.workspace = true
+nix.workspace = true
+
+[target.'cfg(windows)'.dependencies]
+windows.workspace = true
+
+[features]
+default = [] 

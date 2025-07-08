@@ -1,0 +1,63 @@
+[workspace]
+members = [
+    "client",
+    "server", 
+    "common",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/your-org/flyme"
+authors = ["Your Name <your.email@example.com>"]
+
+[workspace.dependencies]
+# Core async runtime
+tokio = { version = "1.41", features = ["full"] }
+
+# TLS and cryptography
+rustls = { version = "0.23", features = ["std"] }
+rustls-pemfile = "2.0"
+sha2 = "0.10"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+bincode = "1.3"
+
+# Error handling and utilities
+anyhow = "1.0"
+thiserror = "2.0"
+uuid = { version = "1.0", features = ["v4"] }
+
+# Async utilities and channels
+futures-util = "0.3"
+crossbeam-channel = "0.5"
+
+# Logging and tracing
+tracing = "0.1"
+
+# Encoding and hashing utilities
+hex = "0.4"
+
+# Platform-specific dependencies (included in workspace for easier management)
+libc = "0.2"
+nix = { version = "0.29", features = ["socket", "signal", "process"] }
+windows = { version = "0.58", features = [
+    "Win32_System_Pipes",
+    "Win32_System_IO", 
+    "Win32_System_Threading",
+    "Win32_Security",
+    "Win32_Storage_FileSystem"
+] }
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
+panic = "abort"
+
+[profile.dev]
+debug = true 

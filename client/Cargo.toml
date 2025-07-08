@@ -1,0 +1,39 @@
+[package]
+name = "flyme-client"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Flyme IPC client library with mutual TLS authentication"
+keywords = ["ipc", "tls", "security", "client", "inter-process"]
+categories = ["network-programming", "api-bindings"]
+
+[lib]
+name = "flyme_client"
+path = "src/lib.rs"
+
+[dependencies]
+# Workspace dependencies
+anyhow.workspace = true
+rustls.workspace = true
+rustls-pemfile.workspace = true
+uuid.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+serde.workspace = true
+futures-util.workspace = true
+
+# Local workspace crates
+flyme-common = { path = "../common" }
+
+[features]
+default = []
+
+[[example]]
+name = "basic"
+path = "examples/basic.rs"
+
+[[example]]
+name = "cli"
+path = "examples/cli.rs" 

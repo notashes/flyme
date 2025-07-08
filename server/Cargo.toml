@@ -1,0 +1,56 @@
+[package]
+name = "flyme-server"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Flyme IPC server with mutual TLS authentication and client validation"
+keywords = ["ipc", "tls", "security", "server", "inter-process"]
+categories = ["network-programming", "authentication"]
+
+[lib]
+name = "flyme_server"
+path = "src/lib.rs"
+
+[dependencies]
+# Workspace dependencies
+anyhow.workspace = true
+rustls.workspace = true
+rustls-pemfile.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+serde.workspace = true
+sha2.workspace = true
+futures-util.workspace = true
+hex.workspace = true
+
+# Additional dependencies for examples
+tracing-subscriber = "0.3"
+ctrlc = "3.4"
+
+# Local workspace crates
+flyme-common = { path = "../common" }
+
+# Platform-specific dependencies
+[target.'cfg(unix)'.dependencies]
+libc.workspace = true
+nix.workspace = true
+
+[target.'cfg(windows)'.dependencies]
+windows.workspace = true
+
+[features]
+default = []
+
+[[example]]
+name = "basic"
+path = "examples/basic.rs"
+
+[[example]]
+name = "daemon"
+path = "examples/daemon.rs"
+
+[[example]]
+name = "echo"
+path = "examples/echo.rs" 
